@@ -6,6 +6,11 @@
 
 <!-- !toc (minlevel=2 omit="Table of Contents") -->
 
+* [Prerequisites](#prerequisites)
+* [Examples](#examples)
+  * [Limit Connections and SessionRate](#limit-connections-and-sessionrate)
+* [References](#references)
+
 <!-- toc! -->
 
 ## Prerequisites
@@ -18,11 +23,13 @@
 
 ### Limit Connections and SessionRate
 
+Source: [src/throttle.conf](src/throttle.conf)
+
 If it is desired to protect a backend with a dedicated session and connection rate use this recipe.
 
 ````sh
 # start a backend server
-node src/backend.js &
+node src/backend.js
 
 # in another terminal
 # start haproxy only allowing 5 concurrent requests
@@ -38,6 +45,8 @@ node src/client.js
 ## References
 
 <!-- !ref -->
+
+* [HAProxy][HAProxy]
 
 <!-- ref! -->
 
