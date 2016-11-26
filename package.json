@@ -1,0 +1,23 @@
+{
+	"name": "haproxy-examples",
+  "version": "1.0.0",
+  "description": "A collection of HAProxy examples",
+  "main": "",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/commenthol/haproxy-examples.git"
+  },
+  "author": "commenthol <commenthol@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/commenthol/haproxy-examples/issues"
+  },
+  "homepage": "https://github.com/commenthol/haproxy-examples",
+	"private": true
+}

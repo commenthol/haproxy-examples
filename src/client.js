@@ -3,8 +3,7 @@
 'use strict'
 
 var http = require('http')
-var extend = require('util')._extend
-var stats = require('./lib/stats')
+var Stats = require('./lib/stats')
 var cli = require('./lib/cli')
 
 /**
@@ -15,12 +14,12 @@ var cli = require('./lib/cli')
  * @param {Function} fn - function run call `count`-times in parallel
  * @param {Function} callback - if undefined then loop runs endlessly
  */
-function parallel(options, fn, callback) {
-  options = extend({ count: 1 }, options)
+function parallel (options, fn, callback) {
+  options = Object.assign({ count: 1 }, options)
 
   var i = options.count
 
-  function cb(err, res) {
+  function cb (err, res) { // eslint-disable-line handle-callback-err
     if (callback) {
       i--
       if (i === 0) {
@@ -32,14 +31,14 @@ function parallel(options, fn, callback) {
     }
   }
 
-  function run() {
+  function run () {
     try {
       fn(function (err, res) {
         process.nextTick(function () {
           cb(err, res)
         })
       })
-    } catch(e) {
+    } catch (e) {
       cb(e)
     }
   }
@@ -50,7 +49,7 @@ function parallel(options, fn, callback) {
       limit--
       run()
     }
-  })();
+  })()
 }
 
 /**
@@ -59,8 +58,8 @@ function parallel(options, fn, callback) {
  * @param {Object} options - http options
  * @param {Function} callback - `function (err, statusCode)`
  */
-function httpReq(options, callback) {
-  options = extend({
+function httpReq (options, callback) {
+  options = Object.assign({
     host: 'localhost',
     port: 8000,
     path: '/'
@@ -72,7 +71,6 @@ function httpReq(options, callback) {
       .on('end', function () {
         callback(null, res.statusCode)
       })
-
   })
   .on('error', function (e) {
     callback(e)
@@ -85,10 +83,10 @@ function httpReq(options, callback) {
  * @param {Object} option - http request option
  * @return {Object} self
  */
-function runner(option) {
+function runner (option) {
   var self = {}
 
-  self.stats = stats()
+  self.stats = new Stats(1000, 'client')
   self.stats.start()
 
   self.run = function (cb) {
@@ -114,7 +112,7 @@ module.exports = {
  * client.js [--count <number>] [--port <number>]
  */
 if (require.main === module) {
-  var opts = extend({ count: 10 }, cli())
+  var opts = Object.assign({ count: 10 }, cli())
   var r = runner(opts)
   parallel(opts, r.run)
 }

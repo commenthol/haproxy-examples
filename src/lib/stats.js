@@ -3,47 +3,54 @@
 /**
  * Statistics
  */
-var stats = function (timeout) {
-  var self = {
+function Stats (timeout, port) {
+  Object.assign(this, {
     data: {},
+    _port: port || '',
     _time: 0,
     _count: 0,
-    values: {
-      _sum: 0
-    },
+    values: { _sum: 0 },
     timeout: timeout || 1000
-  }
+  })
 
-  self.count = function (val) {
+  process.on('SIGINT', function () {
+    this.stop()
+    setTimeout(function () {
+      process.exit(0)
+    }, 20)
+  }.bind(this))
+}
+Stats.prototype = {
+  count: function (val) {
     if (val) {
-      if (!self.values[val]) {
-        self.values[val] = 0
+      if (!this.values[val]) {
+        this.values[val] = 0
       }
-      self.values[val]++
+      this.values[val]++
     }
-    self.values._sum++
-  }
+    this.values._sum++
+  },
 
-  self.timer = function () {
-    var diff = +Date.now() - self._start
+  timer: function () {
+    var diff = +Date.now() - this._start
 
     // count up values
-    for (var val in self.values) {
-      if (!self.data[val]) {
-        self.data[val] = 0
+    for (var val in this.values) {
+      if (!this.data[val]) {
+        this.data[val] = 0
       }
-      self.data[val] += self.values[val]
+      this.data[val] += this.values[val]
     }
-    self._time += diff
-    self._count++
+    this._time += diff
+    this._count++
 
-    self.log(diff, self.values)
+    this.log(diff, this.values)
 
-    self.values = { _sum: 0 }
-    self._start = +Date.now()
-  }
+    this.values = { _sum: 0 }
+    this._start = +Date.now()
+  },
 
-  self.log = function (diff, values, count) {
+  log: function (diff, values, count) {
     var out = []
     Object.keys(values).sort().forEach(function (val) {
       var v = values[val]
@@ -53,28 +60,19 @@ var stats = function (timeout) {
       out.push(val + ':' + v)
     })
 
-    console.log(diff + ' ms', out.join('\t'))
-  }
+    console.log(this._port + '   ' + diff + ' ms', out.join('\t'))
+  },
 
-  self.start = function () {
-    self._start = +Date.now()
-    self._timerId = setInterval(self.timer, self.timeout)
-  }
+  start: function () {
+    this._start = +Date.now()
+    this._timerId = setInterval(this.timer.bind(this), this.timeout)
+  },
 
-  self.stop = function () {
+  stop: function () {
     console.log()
-    self.log(self._time, self.data, self._count)
-    clearInterval(self._timerId)
+    this.log(this._time, this.data, this._count)
+    clearInterval(this._timerId)
   }
-
-  process.on('SIGINT', function () {
-    self.stop()
-    setTimeout(function () {
-      process.exit(0)
-    }, 20)
-  })
-
-  return self
 }
 
-module.exports = stats
+module.exports = Stats

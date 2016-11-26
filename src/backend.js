@@ -4,20 +4,20 @@
 
 var http = require('http')
 var url = require('url')
-var extend = require('util')._extend
-var stats = require('./lib/stats')()
+var Stats = require('./lib/stats')
 var cli = require('./lib/cli')
 
 /**
  * starts a HTTP Server
  */
 function startServer (options) {
+  var stats
 
   if (typeof options === 'number') {
     options = { port: options }
   }
 
-  options = extend({
+  options = Object.assign({
     port: 3000,
     stats: true,
     log: false,
@@ -25,6 +25,7 @@ function startServer (options) {
   }, options)
 
   if (options.stats) {
+    stats = new Stats(1000, options.port)
     stats.start()
   }
 
@@ -39,7 +40,11 @@ function startServer (options) {
       console.log(req.url, req.headers, query)
     }
 
-    if (/\/\d{3}/.test(req.url)) {
+    if (/^\/ping$/.test(req.url)) {
+      res.statusCode = 200
+      res.end('pong')
+      return
+    } else if (/^\/\d{3}/.test(req.url)) {
       status = req.url.replace(/\/(\d{3})/, '$1')
       status = parseInt(status, 10)
       switch (status) {
@@ -85,6 +90,6 @@ exports.server = startServer
  * backend.js [--port <number>] [--delay <time in ms>]
  */
 if (require.main === module) {
-  var opts = extend({ port: 3000, delay: 0 }, cli())
+  var opts = Object.assign({ port: 3000, delay: 0 }, cli())
   startServer(opts).listen(opts.port)
 }

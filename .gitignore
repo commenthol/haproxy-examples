@@ -1,2 +1,6 @@
+haproxy-*/
+haproxy-*.tar.gz
+haproxy
+99-*
 *.log
 _.*
