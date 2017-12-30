@@ -1,0 +1,20 @@
+CWD=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+
+IMAGE=haproxy:1.8-alpine
+
+function run () {
+  local conf=$1
+  docker run \
+    --rm \
+    --name ha \
+    -it \
+    -e LOCAL_IP=172.17.0.1 \
+    -v $(pwd)/conf/$conf:/usr/local/etc/haproxy/haproxy.cfg \
+    -v $(pwd)/conf:/etc/haproxy \
+    -v $(pwd)/run:/var/run \
+    -v $(pwd)/conf/start.sh:/usr/local/bin/start.sh \
+    -p 80:80 \
+    -p 443:443 \
+    -p 8888:8888 \
+    $IMAGE start.sh
+}
