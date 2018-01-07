@@ -81,6 +81,10 @@ function startServer (options) {
     }
   })
 
+  server.start = function (cb) {
+    server.listen(options.port, cb)
+  }
+
   return server
 }
 
@@ -91,5 +95,5 @@ exports.server = startServer
  */
 if (require.main === module) {
   var opts = Object.assign({ port: 3000, delay: 0 }, cli())
-  startServer(opts).listen(opts.port)
+  startServer(opts).start()
 }

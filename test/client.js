@@ -8,7 +8,7 @@ var server = require('../src/backend').server
 
 describe('httpReq', function () {
   before(function () {
-    server(3000).listen(3000)
+    server({port: 3000}).start()
   })
 
   it('can call a backend', function (done) {

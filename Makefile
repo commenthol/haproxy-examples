@@ -14,7 +14,7 @@ loadbalance:
 throttle:
 	node src/backend.js &
 	haproxy -f conf/throttle.cfg &
-	node src/client.js
+	node src/client.js --count 1000
 	make stop
 
 # kill any running servers

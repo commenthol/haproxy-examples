@@ -1,5 +1,5 @@
 {
-	"name": "haproxy-examples",
+  "name": "haproxy-examples",
   "version": "1.0.0",
   "description": "A collection of HAProxy examples",
   "main": "",
@@ -19,5 +19,8 @@
     "url": "https://github.com/commenthol/haproxy-examples/issues"
   },
   "homepage": "https://github.com/commenthol/haproxy-examples",
-	"private": true
+  "private": true,
+  "devDependencies": {
+    "mocha": "^4.0.1"
+  }
 }

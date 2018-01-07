@@ -1,3 +1,4 @@
+node_modules/
 haproxy-*/
 haproxy-*.tar.gz
 haproxy
